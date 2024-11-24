@@ -30,7 +30,7 @@ const resolvers = {
         },
         obtenerDestinos: async () => {
             try {
-                return await Destino.find({});
+                return await Destino.find({}).populate('paquete');
             } catch (error) {
                 console.log(error);
             }
@@ -51,7 +51,7 @@ const resolvers = {
         },
         obtenerDestinoPorId: async (_, { id }) => {
             try {
-                return await Destino.findById(id);
+                return await Destino.findById(id).populate('paquete');
             } catch (error) {
                 console.log(error);
             }

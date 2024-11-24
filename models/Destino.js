@@ -26,6 +26,11 @@ const DestinoSchema = mongoose.Schema({
         type: String,  // La mejor época para visitar el destino
         required: true
     },
+    paquete_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Paquete',  // Referencia al paquete que ofrece el paquete
+        required: true
+    },
     fecha_creacion: {
         type: Date,
         default: Date.now

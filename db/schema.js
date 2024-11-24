@@ -10,17 +10,6 @@ const typeDefs = gql`
         registro: String
     }
 
-    type Paquete {
-        _id: ID
-        nombre: String
-        descripcion: String
-        precio: Float
-        duracion: Int
-        destino: String
-        agencia: Agencia
-        fecha_creacion: String
-    }
-
     type Agencia {
         _id: ID
         nombre: String
@@ -29,6 +18,23 @@ const typeDefs = gql`
         email: String
         direccion: String
         fecha_creacion: String
+        paquetes: [Paquete]
+    }
+
+    type Paquete {
+        _id: ID
+        nombre: String
+        descripcion: String
+        precio: Float
+        duracion: Int
+        destinoPrincipal: String
+        incluye: String
+        grupo: Int
+        calificacion: Float
+        foto: String
+        agencia: Agencia
+        fecha_creacion: String
+        destinos: [Destino]
     }
 
     type Destino {
@@ -39,6 +45,7 @@ const typeDefs = gql`
         actividades: [String]
         clima: String
         mejor_epoca: String
+        paquete: Paquete
         fecha_creacion: String
     }
 
@@ -66,6 +73,10 @@ const typeDefs = gql`
         precio: Float!
         duracion: Int!
         destino: String!
+        incluye: String!
+        grupo: Int
+        calificacion: Float!
+        foto: String
         agencia_id: ID!
     }
 
@@ -84,6 +95,7 @@ const typeDefs = gql`
         actividades: [String]!
         clima: String!
         mejor_epoca: String!
+        paquete_id: ID!
     }
 
     input AutenticarInput {
