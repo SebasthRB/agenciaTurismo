@@ -33,7 +33,7 @@ const destinoSchema = new mongoose.Schema({
     },
     paquete_id: { 
         type: mongoose.Schema.Types.ObjectId, 
-        ref: "Paquete", 
+        ref: 'Paquete', 
         required: true,
         trim:true  
     },

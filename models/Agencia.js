@@ -1,36 +1,33 @@
 const mongoose = require('mongoose');
 
-const agenciaSchema = new mongoose.Schema({
+const AgenciaSchema = mongoose.Schema({
     nombre: {
         type: String,
         required: true,
-        trim:true
+        trim: true
     },
     contacto: {
         type: String,
-        required:true,
-        trim:true,
+        required: true
     },
-    telefono:{
+    telefono: {
         type: String,
-        required:true,
-        trim:true
+        required: true
     },
-    email:{
+    email: {
         type: String,
-        required:true,
-        trim:true,
-        unique:true
+        required: true,
+        unique: true,
+        trim: true
     },
-    direccion:{
+    direccion: {
         type: String,
-        required:true,
-        trim:true
+        required: true
     },
-    fecha_creacion:{
-        type: Date, 
-        default: Date.now()
-    },
+    fecha_creacion: {
+        type: Date,
+        default: Date.now
+    }
 });
 
-module.exports = mongoose.model('Agencia', agenciaSchema);
+module.exports = mongoose.model('Agencia', AgenciaSchema);

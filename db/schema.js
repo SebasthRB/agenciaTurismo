@@ -1,25 +1,15 @@
-const {gql} = require('apollo-server');
-
+const { gql } = require('apollo-server');
 
 const typeDefs = gql`
-    type Curso {
-        titulo: String
-        tecnologia: String
+    # Definición de los tipos de datos
+    type Usuario {
+        _id: ID
+        nombre: String
+        email: String
+        password: String
+        registro: String
     }
 
-    type Tecnologia {
-        tecnologia: String
-    }
-    
-    type Query{
-        obtenerCursos : [Curso]
-        obtenerTecnologia : [Tecnologia]
-        paquetes: [Paquete]
-        destinos: [Destino]
-        agencias: [Agencia]
-        destinoPorId(id: ID!): Destino
-    }
-    
     type Agencia {
         _id: ID
         nombre: String
@@ -28,34 +18,40 @@ const typeDefs = gql`
         email: String
         direccion: String
         fecha_creacion: String
+        paquetes: [Paquete]
     }
-    
-    type Destino {
-        _id: ID!
-        nombre: String!
-        descripcion: String!
-        puntos_interes: [String]
-        actividades: [String]
-        clima: String
-        mejor_epoca: String
-        paquete_id: ID!
-        fecha_creacion: String
-    }
-    
+
     type Paquete {
         _id: ID
         nombre: String
         descripcion: String
         precio: Float
         duracion: Int
-        destino: String
+        destinoPrincipal: String
         incluye: String
         grupo: Int
         calificacion: Float
         foto: String
-        agencia_id: ID
+        agencia: Agencia
         fecha_creacion: String
-        telefono: String
+        destinos: [Destino]
+    }
+
+    type Destino {
+        _id: ID
+        nombre: String
+        descripcion: String
+        puntos_interes: [String]
+        actividades: [String]
+        clima: String
+        mejor_epoca: String
+        paquete: Paquete
+        fecha_creacion: String
+    }
+    
+    type Query{
+        obtenerCursos : [Curso]
+        obtenerTecnologia : [Tecnologia]
     }
 
     input UsuarioInput{
@@ -64,18 +60,53 @@ const typeDefs = gql`
             password: String!
     }
 
+    input PaqueteInput {
+        nombre: String!
+        descripcion: String!
+        precio: Float!
+        duracion: Int!
+        destino: String!
+        incluye: String!
+        grupo: Int
+        calificacion: Float!
+        foto: String
+        agencia_id: ID!
+    }
+
+    input AgenciaInput {
+        nombre: String!
+        contacto: String!
+        telefono: String!
+        email: String!
+        direccion: String!
+    }
+
+    input DestinoInput {
+        nombre: String!
+        descripcion: String!
+        puntos_interes: [String]!
+        actividades: [String]!
+        clima: String!
+        mejor_epoca: String!
+        paquete_id: ID!
+    }
+
     input AutenticarInput {
         email: String!
         password: String!
     }
 
-    type Token{
+    type Token {
         token: String
     }
 
-    type Mutation{
-        crearUsuario(input: UsuarioInput): String
+    # Definición de las mutaciones
+    type Mutation {
+        crearUsuario(input: UsuarioInput): Usuario
         autenticarUsuario(input: AutenticarInput): Token
+        crearPaquete(input: PaqueteInput): Paquete
+        crearAgencia(input: AgenciaInput): Agencia
+        crearDestino(input: DestinoInput): Destino
     }
 `;
 
