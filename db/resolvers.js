@@ -1,4 +1,7 @@
 const Usuario = require('../models/Usuario');
+const Paquete = require('../models/Paquete');
+const Destino = require('../models/Destino');
+const Agencia = require('../models/Agencia');
 const bcryptjs = require('bcryptjs');
 const jwt = require ('jsonwebtoken');
 require('dotenv').config({path: 'variables.env'})
@@ -10,8 +13,43 @@ const crearToken = (usuario, secreta, expiresIn) => {
 }
 
 const resolvers = {
-    Query : {
-     
+    Query : {        
+        
+        agencias: async () => {
+            try {
+              return await Agencia.find(); // Para obtener todas las agencias
+            } catch (error) {
+              console.error(error);
+              throw new Error('Error al obtener las agencias');
+            }
+        },
+
+        destinos: async () => {
+            try {
+              return await Destino.find(); // Consulta para obtener todos los destinos
+            } catch (error) {
+              console.error(error);
+              throw new Error('Error al obtener los destinos');
+            }
+        },
+
+        destinoPorId: async (_, { id }) => {
+            try {
+              return await Destino.findById(id); // Consulta para obtener un destino por ID
+            } catch (error) {
+              console.error(error);
+              throw new Error('Error al obtener el destino');
+            }
+        },
+
+        paquetes: async () => {
+            try {
+              return await Paquete.find(); // Consulta para obtener todos los paquetes
+            } catch (error) {
+              console.error(error);
+              throw new Error('Error al obtener los paquetes');
+            }
+        }
     },
 
     Mutation: {
@@ -52,7 +90,7 @@ const resolvers = {
 
             const passwordCorrecto = await bcryptjs.compare(password, existeUsuario.password);
             if(!passwordCorrecto){
-                throw new Error('Contrasñea incorrecta')
+                throw new Error('Contraseña incorrecta')
             }
 
             return{
