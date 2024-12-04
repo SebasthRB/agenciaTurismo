@@ -1,5 +1,5 @@
 
-const Paquete = require("d:/JOSUE LM - UC/UNIVERSIDAD/PROYECTO - TURISMO/agenciaTurismo/models/Paquete"); // Modelo de Paquete
+const Paquete = require("../../agenciaTurismo/routes/Paquete"); // Modelo de Paquete
 
 const controllerPaquete = {
 

@@ -1,62 +1,65 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const paqueteSchema = new mongoose.Schema({
     nombre: { 
         type: String, 
         required: true,
-        trim:true
+        trim: true
     },
     descripcion: { 
         type: String, 
         required: true,
-        trim:true
+        trim: true
     },
     precio: { 
         type: Number, 
         required: true,
-        trim:true
+        trim: true
     },
     duracion: { 
         type: Number, 
         required: true,
-        trim:true
-        
-    }, // en días
-    destino: { 
+        trim: true
+    }, // duración en días
+    destinoPrincipal: { 
         type: String, 
         required: true,
-        trim:true
+        trim: true
     },
     incluye: { 
-        type: String, 
+        type: [String], 
         required: true,
-        trim:true 
+        trim: true
     },
     grupo: { 
         type: Number, 
         required: true,
-        trim:true 
+        trim: true
     }, // capacidad del grupo
     calificacion: { 
         type: Number, 
         required: true,
-        trim:true 
+        trim: true
     }, // promedio de calificación
     foto: { 
         type: String, 
         required: true,
-        trim:true 
+        trim: true
     }, // URL de la imagen
-    agencia_id: { 
+    agencia: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: "Agencia", 
-        required: true,
-        trim:true
+        required: true
     },
+    destinos: [{ 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "Destino", 
+        required: true 
+    }],
     telefono: {
-        type: String, 
-        required: true,
-        trim:true
+        type: String,
+        required: false,
+        trim: true
     },
     fecha_creacion: { 
         type: Date, 

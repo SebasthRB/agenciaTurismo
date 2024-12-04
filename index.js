@@ -8,8 +8,8 @@ const express = require("express");
 const cors = require("cors");
 const BodyParser = require('body-parser');
 
-const Paquete_rutas = require("d:/JOSUE LM - UC/UNIVERSIDAD/PROYECTO - TURISMO/agenciaTurismo/routes/Paquete");
-const Destino_rutas = require("d:/JOSUE LM - UC/UNIVERSIDAD/PROYECTO - TURISMO/agenciaTurismo/routes/Destino");
+const Paquete_rutas = require('../agenciaTurismo/routes/Paquete');
+const Destino_rutas = require("../agenciaTurismo/routes/Destino");
 const { graphql } = require('graphql');
 const Paquete = require('./models/Paquete');
 

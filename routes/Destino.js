@@ -1,5 +1,5 @@
 const express = require('express');
-const Destino = require("d:/JOSUE LM - UC/UNIVERSIDAD/PROYECTO - TURISMO/agenciaTurismo/controllers/Destino"); // Modelo de Paquete
+const Destino = require("../controllers/Destino"); // Modelo de Paquete
 
 const rutDestino = express.Router();
 

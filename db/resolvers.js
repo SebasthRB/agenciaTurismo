@@ -13,8 +13,7 @@ const crearToken = (usuario, secreta, expiresIn) => {
 }
 
 const resolvers = {
-    Query : {     
-        
+    Query: {
         obtenerUsuarios: async () => {
             try {
                 return await Usuario.find({});
@@ -25,58 +24,71 @@ const resolvers = {
         
         agencias: async () => {
             try {
-              return await Agencia.find(); // Para obtener todas las agencias
+                return await Agencia.find(); // Para obtener todas las agencias
             } catch (error) {
-              console.error(error);
-              throw new Error('Error al obtener las agencias');
+                console.error(error);
+                throw new Error('Error al obtener las agencias');
             }
         },
 
         destinos: async () => {
             try {
-              return await Destino.find(); // Consulta para obtener todos los destinos
+                return await Destino.find().populate('agencia'); // Poblar la información de la agencia
             } catch (error) {
-              console.error(error);
-              throw new Error('Error al obtener los destinos');
+                console.error(error);
+                throw new Error('Error al obtener los destinos');
             }
         },
 
         destinoPorId: async (_, { id }) => {
             try {
-              return await Destino.findById(id); // Consulta para obtener un destino por ID
+                return await Destino.findById(id).populate('agencia');
             } catch (error) {
-              console.error(error);
-              throw new Error('Error al obtener el destino');
+                console.error(error);
+                throw new Error('Error al obtener el destino');
             }
         },
 
         paquetes: async () => {
             try {
-              return await Paquete.find(); // Consulta para obtener todos los paquetes
+                return await Paquete.find().populate('agencia'); // Poblar la información de la agencia
             } catch (error) {
-              console.error(error);
-              throw new Error('Error al obtener los paquetes');
+                console.error(error);
+                throw new Error('Error al obtener los paquetes');
             }
         },
+
         obtenerPaquetePorId: async (_, { id }) => {
             try {
-                return await Paquete.findById(id).populate('agencia');
+                return await Paquete.findById(id).populate('agencia').populate('destinos'); // Poblamos los destinos
             } catch (error) {
                 console.log(error);
             }
         },
+
         obtenerDestinoPorId: async (_, { id }) => {
             try {
-                return await Destino.findById(id).populate('paquete');
+                return await Destino.findById(id).populate('agencia'); 
             } catch (error) {
                 console.log(error);
             }
         },
+
         obtenerAgenciaPorId: async (_, { id }) => {
             try {
                 return await Agencia.findById(id);
             } catch (error) {
                 console.log(error);
+            }
+        },
+
+        obtenerDestinosPorPaquete: async (_, { id }) => {
+            try {
+                const destinos = await Destino.find({ paquete_id: id }).populate('agencia');
+                return destinos;
+            } catch (error) {
+                console.error(error);
+                throw new Error('Error al obtener los destinos del paquete');
             }
         }
     },
@@ -113,13 +125,13 @@ const resolvers = {
             }
 
             const passwordCorrecto = await bcryptjs.compare(password, existeUsuario.password);
-            if(!passwordCorrecto){
-                throw new Error('Contraseña incorrecta')
+            if (!passwordCorrecto) {
+                throw new Error('Contraseña incorrecta');
             }
 
             return {
                 token: crearToken(existeUsuario, process.env.SECRETA, '2hr')
-            }
+            };
         },
 
         // Crear una nueva agencia
@@ -130,28 +142,57 @@ const resolvers = {
                 return nuevaAgencia;
             } catch (error) {
                 console.log(error);
+                throw new Error('Error al crear la agencia');
             }
         },
 
         // Crear un nuevo destino
         crearDestino: async (_, { input }) => {
+            const { agencia_id, ...resto } = input;
             try {
-                const nuevoDestino = new Destino(input);
+                const nuevoDestino = new Destino({
+                    ...resto,
+                    agencia: agencia_id, // Asociamos la agencia al destino
+                });
+        
                 await nuevoDestino.save();
-                return nuevoDestino;
+        
+                // Poblar el campo 'agencia' en el destino antes de devolverlo
+                const destinoConAgencia = await Destino.findById(nuevoDestino._id).populate('agencia');
+        
+                return destinoConAgencia;
             } catch (error) {
-                console.log(error);
+                console.error(error);
+                throw new Error('Error al crear el destino');
             }
         },
 
         // Crear un nuevo paquete turístico
         crearPaquete: async (_, { input }) => {
+            const { agencia_id, destinos, telefono, ...resto } = input;
+
             try {
-                const nuevaPaquete = new Paquete(input);
-                await nuevaPaquete.save();
-                return nuevaPaquete;
+                const nuevoPaquete = new Paquete({
+                    ...resto,
+                    agencia: agencia_id, // Asociamos la agencia al paquete
+                    destinos, // Asociamos los destinos al paquete
+                    telefono, // Establecemos el teléfono de contacto
+                });
+
+                await nuevoPaquete.save();
+
+                // Ahora actualizamos los destinos para asociarlos al nuevo paquete
+                if (destinos && destinos.length > 0) {
+                    await Destino.updateMany(
+                        { _id: { $in: destinos } },
+                        { $push: { paquetes: nuevoPaquete._id } }
+                    );
+                }
+
+                return nuevoPaquete;
             } catch (error) {
                 console.log(error);
+                throw new Error('Error al crear el paquete');
             }
         }
     }
